@@ -11,6 +11,7 @@ interface BlogArticleProps {
   };
 }
 
+// Function to fetch data from Sanity based on slug
 async function getData(slug: string) {
   const query = `*[_type == 'blog' && slug.current == '${slug}']{
     "currentSlug": slug.current,
@@ -31,8 +32,6 @@ async function getData(slug: string) {
 export default async function BlogArticle({ params }: BlogArticleProps) {
   const data: fullBlog = await getData(params.slug);
 
-  console.log("Fetched Data:", data);
-
   return (
     <div className="mt-12">
       <h1>
@@ -44,7 +43,7 @@ export default async function BlogArticle({ params }: BlogArticleProps) {
         </span>
       </h1>
 
-      {data.titleImage ? (
+      {data.titleImage && (
         <Image
           src={urlFor(data.titleImage).url()} 
           width={500}
@@ -53,19 +52,15 @@ export default async function BlogArticle({ params }: BlogArticleProps) {
           priority 
           className="mt-8 mx-auto" 
         />
-      ) : (
-        <p className="mt-8 text-center text-gray-500">Image not available</p>
       )}
 
       <div className="mt-16 prose prose-blue prose-xl dark:prose-invert prose-li:marker:text-blue-600">
         {data.content && Array.isArray(data.content) ? (
           <PortableText value={data.content} />
-        ) : (
-          <p className="text-gray-500">Content not available</p>
-        )}
+        ) : null}
       </div>
-      {/* comment */}
-      <CommentSection/>
+
+      <CommentSection />
     </div>
   );
 }
