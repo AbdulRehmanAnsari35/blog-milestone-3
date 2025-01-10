@@ -4,7 +4,12 @@ import { PortableText } from "next-sanity";
 import Image from "next/image";
 import { urlFor } from "@/app/lib/sanity";
 import CommentSection from "@/app/components/CommentSection";
-import { NextPageContext } from "next"; // <-- Add this import
+
+interface BlogArticleProps {
+  params: {
+    slug: string;
+  };
+}
 
 async function getData(slug: string) {
   const query = `*[_type == 'blog' && slug.current == '${slug}']{
@@ -15,21 +20,14 @@ async function getData(slug: string) {
   }`;
 
   const data = await client.fetch(query);
-  
+
   if (!data || data.length === 0) {
     throw new Error(`No blog found for slug: ${slug}`);
   }
 
-  return data[0]; 
+  return data[0];
 }
 
-interface BlogArticleProps {
-  params: {
-    slug: string;
-  };
-}
-
-// Fixing the way we handle context in the function
 export default async function BlogArticle({
   params,
 }: BlogArticleProps) {
@@ -48,23 +46,31 @@ export default async function BlogArticle({
         </span>
       </h1>
 
-      {data.titleImage && (
+      {/* Image section */}
+      {data.titleImage ? (
         <Image
           src={urlFor(data.titleImage).url()} 
           width={500}
           height={500} 
-          alt="Title Image" 
-          priority 
+          alt={data.title || "Blog image"} 
+          priority
           className="mt-8 mx-auto" 
         />
+      ) : (
+        <div className="mt-8 text-center text-gray-500">No image available</div>
       )}
 
+      {/* Content Section */}
       <div className="mt-16 prose prose-blue prose-xl dark:prose-invert prose-li:marker:text-blue-600">
         {data.content && Array.isArray(data.content) ? (
           <PortableText value={data.content} />
-        ) : null}
+        ) : (
+          <p className="text-gray-500">Content not available</p>
+        )}
       </div>
-      <CommentSection/>
+
+      {/* Comment Section */}
+      <CommentSection />
     </div>
   );
 }
