@@ -3,6 +3,7 @@ import { client } from "@/app/lib/sanity";
 import { PortableText } from "next-sanity";
 import Image from "next/image";
 import { urlFor } from "@/app/lib/sanity";
+import CommentSection from "@/app/components/CommentSection";
 
 interface BlogArticleProps {
   params: {
@@ -63,6 +64,8 @@ export default async function BlogArticle({ params }: BlogArticleProps) {
           <p className="text-gray-500">Content not available</p>
         )}
       </div>
+      {/* comment */}
+      <CommentSection/>
     </div>
   );
 }
