@@ -5,4 +5,10 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = {
+  reactStrictMode: true,
+  experimental: {
+    appDir: true, // Enable app directory if using app directory routing
+  },
+};
+

@@ -15,19 +15,36 @@ async function getData(slug: string) {
   }`;
 
   const data = await client.fetch(query);
-  
+
   if (!data || data.length === 0) {
     throw new Error(`No blog found for slug: ${slug}`);
   }
 
-  return data[0]; 
+  return data[0];
 }
 
-export default async function BlogArticle({
-  params, // destructuring params directly from Next.js
-}: {
-  params: { slug: string };
-}) {
+// Generate static params (optional, depends on your setup)
+export async function generateStaticParams() {
+  const query = `*[_type == 'blog']{
+    slug {
+      current
+    }
+  }`;
+
+  const blogs = await client.fetch(query);
+
+  return blogs.map((blog: { slug: { current: string } }) => ({
+    slug: blog.slug.current,
+  }));
+}
+
+interface BlogArticleProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default async function BlogArticle({ params }: BlogArticleProps) {
   const data: fullBlog = await getData(params.slug);
 
   console.log("Fetched Data:", data);
@@ -45,12 +62,12 @@ export default async function BlogArticle({
 
       {data.titleImage && (
         <Image
-          src={urlFor(data.titleImage).url()} 
+          src={urlFor(data.titleImage).url()}
           width={500}
-          height={500} 
-          alt="Title Image" 
-          priority 
-          className="mt-8 mx-auto" 
+          height={500}
+          alt="Title Image"
+          priority
+          className="mt-8 mx-auto"
         />
       )}
 
@@ -59,7 +76,7 @@ export default async function BlogArticle({
           <PortableText value={data.content} />
         ) : null}
       </div>
-      <CommentSection/>
+      <CommentSection />
     </div>
   );
 }
