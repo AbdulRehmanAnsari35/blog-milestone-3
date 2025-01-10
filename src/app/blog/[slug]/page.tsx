@@ -5,12 +5,7 @@ import Image from "next/image";
 import { urlFor } from "@/app/lib/sanity";
 import CommentSection from "@/app/components/CommentSection";
 
-interface BlogArticleProps {
-  params: {
-    slug: string;
-  };
-}
-
+// Fetch blog data by slug
 async function getData(slug: string) {
   const query = `*[_type == 'blog' && slug.current == '${slug}']{
     "currentSlug": slug.current,
@@ -20,17 +15,19 @@ async function getData(slug: string) {
   }`;
 
   const data = await client.fetch(query);
-
+  
   if (!data || data.length === 0) {
     throw new Error(`No blog found for slug: ${slug}`);
   }
 
-  return data[0];
+  return data[0]; 
 }
 
 export default async function BlogArticle({
-  params,
-}: BlogArticleProps) {
+  params, // destructuring params directly from Next.js
+}: {
+  params: { slug: string };
+}) {
   const data: fullBlog = await getData(params.slug);
 
   console.log("Fetched Data:", data);
@@ -46,31 +43,23 @@ export default async function BlogArticle({
         </span>
       </h1>
 
-      {/* Image section */}
-      {data.titleImage ? (
+      {data.titleImage && (
         <Image
           src={urlFor(data.titleImage).url()} 
           width={500}
           height={500} 
-          alt={data.title || "Blog image"} 
-          priority
+          alt="Title Image" 
+          priority 
           className="mt-8 mx-auto" 
         />
-      ) : (
-        <div className="mt-8 text-center text-gray-500">No image available</div>
       )}
 
-      {/* Content Section */}
       <div className="mt-16 prose prose-blue prose-xl dark:prose-invert prose-li:marker:text-blue-600">
         {data.content && Array.isArray(data.content) ? (
           <PortableText value={data.content} />
-        ) : (
-          <p className="text-gray-500">Content not available</p>
-        )}
+        ) : null}
       </div>
-
-      {/* Comment Section */}
-      <CommentSection />
+      <CommentSection/>
     </div>
   );
 }
