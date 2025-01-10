@@ -2,12 +2,13 @@ export interface simpleBlogCard {
     title: string;
     smallDescription: string;
     currentSlug: string;
-    titleImage: any;
-}
-
-export interface fullBlog {
+    titleImage: unknown; // Temporary fix
+  }
+  
+  export interface fullBlog {
     currentSlug: string;
     title: string;
     content: string;
-    titleImage: any;
-}
+    titleImage: unknown; // Temporary fix
+  }
+  
