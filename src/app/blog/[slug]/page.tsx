@@ -4,14 +4,8 @@ import { PortableText } from "next-sanity";
 import Image from "next/image";
 import { urlFor } from "@/app/lib/sanity";
 import CommentSection from "@/app/components/CommentSection";
+import { NextPageContext } from "next"; // <-- Add this import
 
-interface BlogArticleProps {
-  params: {
-    slug: string;
-  };
-}
-
-// Function to fetch data from Sanity based on slug
 async function getData(slug: string) {
   const query = `*[_type == 'blog' && slug.current == '${slug}']{
     "currentSlug": slug.current,
@@ -29,8 +23,19 @@ async function getData(slug: string) {
   return data[0]; 
 }
 
-export default async function BlogArticle({ params }: BlogArticleProps) {
+interface BlogArticleProps {
+  params: {
+    slug: string;
+  };
+}
+
+// Fixing the way we handle context in the function
+export default async function BlogArticle({
+  params,
+}: BlogArticleProps) {
   const data: fullBlog = await getData(params.slug);
+
+  console.log("Fetched Data:", data);
 
   return (
     <div className="mt-12">
@@ -59,8 +64,7 @@ export default async function BlogArticle({ params }: BlogArticleProps) {
           <PortableText value={data.content} />
         ) : null}
       </div>
-
-      <CommentSection />
+      <CommentSection/>
     </div>
   );
 }
