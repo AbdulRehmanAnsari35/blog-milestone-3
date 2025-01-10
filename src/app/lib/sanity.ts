@@ -1,7 +1,7 @@
 import { createClient } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
 
-
+// Create the Sanity client
 export const client = createClient({
     apiVersion: '2023-05-03',
     dataset: 'production',
@@ -9,8 +9,14 @@ export const client = createClient({
     useCdn: false,
 });
 
-const builder = imageUrlBuilder(client)
+// Create image URL builder
+const builder = imageUrlBuilder(client);
 
-export function urlFor(source: any) {
-    return builder.image(source);
+// Fix: Use `unknown` type instead of `any` for type safety
+export function urlFor(source: unknown) {
+    if (typeof source === 'object' && source !== null) {
+        return builder.image(source);  // This is safe now!
+    } else {
+        throw new Error('Invalid source type');
+    }
 }
