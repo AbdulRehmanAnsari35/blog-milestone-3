@@ -1,6 +1,6 @@
 import React from "react";
 import { ModeToggle } from "./ModeToggle";
-import Link from "next/link"; // Importing Link from Next.js
+import Link from "next/link"; 
 
 const Navbar = () => {
   return (
@@ -10,7 +10,6 @@ const Navbar = () => {
           Silent Pages Blogs
         </h1>
       </Link>
-      {/* Right side: Mode Toggle */}
       <div>
         <ModeToggle />
       </div>

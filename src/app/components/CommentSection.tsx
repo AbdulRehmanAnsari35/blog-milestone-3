@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { FaHeart, FaThumbsUp, FaReply } from "react-icons/fa"; // Importing icons
+import { FaHeart, FaThumbsUp, FaReply } from "react-icons/fa"; 
 
 const CommentSection = () => {
   const [comments, setComments] = useState<{ text: string; liked: boolean; hearted: boolean; replies: string[] }[]>([]);
   const [newComment, setNewComment] = useState("");
-  const [replyTo, setReplyTo] = useState<number | null>(null); // Keep track of which comment to reply to
+  const [replyTo, setReplyTo] = useState<number | null>(null); 
   const [newReply, setNewReply] = useState("");
 
   const handleCommentSubmit = (e: React.FormEvent) => {
@@ -15,7 +15,7 @@ const CommentSection = () => {
         ...prevComments,
         { text: newComment, liked: false, hearted: false, replies: [] },
       ]);
-      setNewComment(""); // Clear the input after submission
+      setNewComment("");
     }
   };
 
@@ -36,7 +36,7 @@ const CommentSection = () => {
   };
 
   const handleReply = (index: number) => {
-    setReplyTo(index); // Set the index of the comment to reply to
+    setReplyTo(index);
   };
 
   const handleReplySubmit = (e: React.FormEvent) => {
@@ -45,16 +45,14 @@ const CommentSection = () => {
       const updatedComments = [...comments];
       updatedComments[replyTo].replies.push(newReply);
       setComments(updatedComments);
-      setNewReply(""); // Clear the reply input after submission
-      setReplyTo(null); // Clear the reply state
+      setNewReply(""); 
+      setReplyTo(null); 
     }
   };
 
   return (
     <div className="mt-8 p-4">
       <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Comments</h2>
-
-      {/* Comment Form */}
       <form onSubmit={handleCommentSubmit} className="mt-4">
         <textarea
           value={newComment}
@@ -72,17 +70,12 @@ const CommentSection = () => {
           Post Comment
         </button>
       </form>
-
-      {/* All Comments */}
       <div className="mt-6">
         <h3 className="text-lg font-medium text-gray-800 dark:text-gray-100">All Comments</h3>
         <div className="mt-4 space-y-4">
           {comments.map((comment, index) => (
             <div key={index} className="p-2">
-              {/* Comment Text with Underline */}
               <p className="text-gray-700 dark:text-gray-300">{comment.text}</p>
-
-              {/* Comment Interactions (Like, Heart, Reply) */}
               <div className="flex items-center space-x-4 mt-2">
                 <div
                   onClick={() => handleLike(index)}
@@ -107,7 +100,6 @@ const CommentSection = () => {
                 </div>
               </div>
 
-              {/* Reply Form */}
               {replyTo === index && (
                 <form onSubmit={handleReplySubmit} className="mt-4">
                   <textarea
@@ -125,8 +117,6 @@ const CommentSection = () => {
                   </button>
                 </form>
               )}
-
-              {/* Displaying Replies */}
               {comment.replies.length > 0 && (
                 <div className="mt-4 space-y-2 pl-6">
                   {comment.replies.map((reply, replyIndex) => (
